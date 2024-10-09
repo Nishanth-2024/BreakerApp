@@ -18,11 +18,10 @@ struct CustomTimePicker: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(title)
-                .foregroundColor(Color.white.opacity(0.75))
                 .font(FontConstants.TimePickerTitleFont)
                 .padding(.horizontal, 20)
             HStack {
-                Picker(selection: $hours, label: Text("Hours").font(FontConstants.TimePickerLabelFont).foregroundColor(Color.white.opacity(0.75))) {
+                Picker(selection: $hours, label: Text("Hours").font(FontConstants.TimePickerLabelFont)) {
                     ForEach(0..<24) { hour in
                         Text("\(hour)").tag(hour)
                     }
@@ -30,7 +29,7 @@ struct CustomTimePicker: View {
                 .pickerStyle(MenuPickerStyle())
                 .clipped()
                 
-                Picker(selection: $minutes, label: Text("Minutes").font(FontConstants.TimePickerLabelFont).foregroundColor(Color.white.opacity(0.75))) {
+                Picker(selection: $minutes, label: Text("Minutes").font(FontConstants.TimePickerLabelFont)) {
                     ForEach(0..<60) { minute in
                         Text("\(minute)").tag(minute)
                     }
@@ -38,7 +37,7 @@ struct CustomTimePicker: View {
                 .pickerStyle(MenuPickerStyle())
                 .clipped()
                 
-                Picker(selection: $seconds, label: Text("Seconds").font(FontConstants.TimePickerLabelFont).foregroundColor(Color.white.opacity(0.75))) {
+                Picker(selection: $seconds, label: Text("Seconds").font(FontConstants.TimePickerLabelFont)) {
                     ForEach(0..<60) { second in
                         Text("\(second)").tag(second)
                     }
@@ -46,14 +45,14 @@ struct CustomTimePicker: View {
                 .pickerStyle(MenuPickerStyle())
                 .clipped()
             }
+            .foregroundColor(Color.settingPickerLabel)
             .onChange(of: hours, { oldValue, newValue in updateValue() })
             .onChange(of: minutes) { oldValue, newValue in updateValue() }
             .onChange(of: seconds, { oldValue, newValue in updateValue() })
             .padding()
-            .background(Color.white.opacity(0.2))
+            .background(Color.settingPickerControlBg)
             .cornerRadius(10)
             .padding(.horizontal,20)
-            .foregroundColor(.white)
             .font(.headline)
             .onAppear {
                 let totalSeconds = Int(value)
@@ -77,6 +76,6 @@ struct CustomTimePicker: View {
         Spacer()
     }
     .frame(maxWidth: 480)
-    .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .top, endPoint: .bottom)
-        .edgesIgnoringSafeArea(.all))
+//    .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .top, endPoint: .bottom)
+//        .edgesIgnoringSafeArea(.all))
 }

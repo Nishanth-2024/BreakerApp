@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    
     @State private var workTime: Double = 2 // Test default
     @State private var breakTime: Double = 4 // Test default
     @State private var showBlurView: Bool = false
@@ -16,40 +17,41 @@ struct ContentView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("BreakerApp")
-                .foregroundColor(Color.white.opacity(0.75))
-                .font(FontConstants.ConfigViewTitleFont)
-                .padding(.top, 40)
+            
             CustomTimePicker(title: "Break Frequency", value: $workTime)
             CustomTimePicker(title: "Break Duration", value: $breakTime)
-            Button(action: startButtonAction) {
+            
+            Button {
+                startStopAction()
+                NSApp.hide(nil)
+            } label: {
                 Label {
-                    Text("Start")
+                    Text(isRunning ? "Stop" : "Start")
                 } icon: {
                     Image(systemName: "figure.run")
                 }
-                .foregroundColor(isRunning ? Color.accentColor : Color.white.opacity(0.625))
             }
-            .font(FontConstants.ConfigViewButtonFont)
-            .buttonStyle(PrimaryButtonStyle(color: .accentColor))
-            .disabled(isRunning)
-            .opacity(isRunning ? 0.375 : 1)
+            .buttonStyle(.plain)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .foregroundStyle(Color.startButtonText)
+            .background(isRunning ? Color.stopButton : Color.startButton)
+            .cornerRadius(4)
         }
         .padding()
-        .background(
-            LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .top, endPoint: .bottom)
-                .edgesIgnoringSafeArea(.all)
-        )
-        .frame(width: 480)
         .onChange(of: showBlurView) { handleBlurViewChange($0, $1) }
     }
     
-    private func startButtonAction() {
+    private func startStopAction() {
         DispatchQueue.main.async {
-            isRunning = true
-            startWorkCycle()
+            let shouldRun  = !isRunning
+            isRunning.toggle()
+            if (shouldRun) {
+                startWorkCycle()
+            } else {
+                showBlurView = false
+            }
         }
-        NSApp.hide(nil)
     }
     
     private func startWorkCycle() {
@@ -61,7 +63,6 @@ struct ContentView: View {
     }
     
     private func handleBlurViewChange(_ oldValue: Bool, _ newValue: Bool) {
-        
         if newValue {
             DispatchQueue.main.async {
                 showFullScreenBlurView()
@@ -87,7 +88,7 @@ struct ContentView: View {
             }
         }
     }
-
+    
     private func configureWindow(_ window: NSWindow, with contentViewController: NSHostingController<FullScreenBlurView>, screen: NSScreen) {
         window.contentViewController = contentViewController
         window.setFrame(screen.frame, display: true)
@@ -103,12 +104,12 @@ struct ContentView: View {
         window.layoutIfNeeded()
     }
     
-    private func handleBlurDismiss(stop: Bool) {
-        DispatchQueue.main.async {
+    private func handleBlurDismiss(stop: Bool = false) {
+        if stop {
             showBlurView = false
-            isRunning = !stop
-        }
-        if !stop {
+            isRunning = false
+        } else {
+            showBlurView = false
             startWorkCycle()
         }
     }
@@ -120,16 +121,6 @@ struct ContentView: View {
             NSApp.presentationOptions = []
         }
     }
-}
-
-func printWithDateTime(_ anyInput: Any) {
-    let currentDate = Date()
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-    let dateString = dateFormatter.string(from: currentDate)
-    
-    print(dateString)
-    print(anyInput)
 }
 
 #Preview {
