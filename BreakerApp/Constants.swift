@@ -54,11 +54,11 @@ struct FontConstants {
     }()
     
     static let TimePickerTitleFont: Font = {
-        return customOrSystemFont(name: "Helvetica Neue", size: 21, weight: .semibold, design: .rounded)
+        return customOrSystemFont(name: "Helvetica Neue", size: 21, weight: .regular, design: .rounded)
     }()
     
     static let TimePickerLabelFont: Font = {
-        return customOrSystemFont(name: "Helvetica Neue", size: 15, weight: .semibold, design: .rounded)
+        return customOrSystemFont(name: "Helvetica Neue", size: 15, weight: .regular, design: .rounded)
     }()
     
     private static func customOrSystemFont(name: String, size: CGFloat, weight: Font.Weight, design: Font.Design) -> Font {

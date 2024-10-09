@@ -14,6 +14,7 @@ struct SettingsView: View {
                 ContentView()
             }
         }
+        .tint(Color.tabTint)
         .frame(width: 480)
     }
 }

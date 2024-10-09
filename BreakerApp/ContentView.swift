@@ -16,7 +16,7 @@ struct ContentView: View {
     @State private var isRunning: Bool = false
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack {
             
             CustomTimePicker(title: "Break Frequency", value: $workTime)
             CustomTimePicker(title: "Break Duration", value: $breakTime)
@@ -99,7 +99,7 @@ struct ContentView: View {
         window.hasShadow = false
         window.backgroundColor = .clear
         window.collectionBehavior = [.stationary, .ignoresCycle, .fullScreenDisallowsTiling, .canJoinAllSpaces, .canJoinAllApplications]
-        window.makeKeyAndOrderFront(nil)
+        // window.makeKeyAndOrderFront(nil)
         window.orderFrontRegardless()
         window.layoutIfNeeded()
     }
