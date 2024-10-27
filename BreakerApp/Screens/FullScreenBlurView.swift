@@ -1,11 +1,18 @@
 import SwiftUI
 import Combine
 
+enum TimerProgressView {
+    case Circle
+    case RoundedRectangle
+}
+
 struct FullScreenBlurView: View {
+    
     var breakDuration: Double
     var onDismiss: (_ stop: Bool) -> Void
     @State private var timeRemaining: Int
     @State private var timerCancellable: AnyCancellable?
+    var timerProgressView: TimerProgressView = .Circle
     
     init(breakDuration: Double, onDismiss: @escaping (_ stop: Bool) -> Void) {
         self.breakDuration = breakDuration
@@ -22,15 +29,46 @@ struct FullScreenBlurView: View {
             // TODO: No permissions requested yet
             return Image(nsImage: dkimage)
         }
+        // return Image(.restModeBackground)
         return Image(.restModeBackground)
+    }
+    
+    private var roundedRectangleTimerProgressView: some View {
+        Group {
+            RoundedRectangle(cornerRadius: 80)
+                .stroke(lineWidth: 9)
+                .foregroundStyle(Color.breakTimer)
+                .opacity(0.3)
+            RoundedRectangle(cornerRadius: 80)
+                .trim(from: 0.0, to: CGFloat(min(Double(timeRemaining) / breakDuration, 1.0)))
+                .stroke(style: StrokeStyle(lineWidth: 9, lineCap: .round, lineJoin: .round))
+                .foregroundStyle(Color.breakTimer)
+                .rotationEffect(Angle(degrees: 270.0))
+        }
+    }
+    
+    private var circularTimerProgressView: some View {
+        Group {
+            Circle()
+                .stroke(lineWidth: 9)
+                .opacity(0.3)
+                .foregroundStyle(Color.breakMessage1)
+            Circle()
+                .trim(from: 0.0, to: CGFloat(min(Double(timeRemaining) / breakDuration, 1.0)))
+                .stroke(style: StrokeStyle(lineWidth: 9, lineCap: .round, lineJoin: .round))
+                .foregroundStyle(Color.breakTimer)
+                .rotationEffect(Angle(degrees: 270.0))
+        }
     }
     
     var body: some View {
         ZStack {
-            Image(.restModeBackground)
-                .resizable()
-                .scaledToFill()
-                .blur(radius: 32, opaque: true)
+            Group {
+                getDesktopBackground()
+                    .resizable()
+                    .scaledToFill()
+                    .blur(radius: 32, opaque: true)
+            }
             VStack {
                 Spacer()
                 Text("Brief Intermission")
@@ -47,23 +85,18 @@ struct FullScreenBlurView: View {
                     .padding()
                 Spacer()
                 ZStack {
-                    Circle()
-                        .stroke(lineWidth: 9)
-                        .opacity(0.3)
-                        .foregroundStyle(Color.breakMessage1)
-                    
-                    Circle()
-                        .trim(from: 0.0, to: CGFloat(min(Double(timeRemaining) / breakDuration, 1.0)))
-                        .stroke(style: StrokeStyle(lineWidth: 9, lineCap: .round, lineJoin: .round))
-                        .foregroundStyle(Color.breakTimer)
-                        .rotationEffect(Angle(degrees: 270.0))
-                    
+                    switch timerProgressView {
+                        case .RoundedRectangle:
+                        roundedRectangleTimerProgressView
+                        case .Circle:
+                        circularTimerProgressView
+                    }
                     Text(timeString(time: timeRemaining))
                         .font(FontConstants.BlurViewTimeFont)
                         .foregroundStyle(Color.breakTimer)
                         .animation(.easeInOut(duration: 0.1825), value: timeRemaining)
                 }
-                .frame(width: 196, height: 196)
+                .frame(width: 256, height: 256)
                 .padding()
                 Spacer()
                 HStack {
@@ -151,5 +184,5 @@ struct FullScreenBlurView: View {
 }
 
 #Preview {
-    FullScreenBlurView(breakDuration: 60) {stop in }.frame(width: 1000, height: 750)
+    FullScreenBlurView(breakDuration: 12) {stop in }.frame(width: 1000, height: 750)
 }

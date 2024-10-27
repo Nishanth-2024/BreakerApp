@@ -11,7 +11,7 @@ struct SettingsView: View {
     var body: some View {
         TabView {
             Tab("Timings", systemImage: "gear") {
-                ContentView()
+                TimingsView()
             }
         }
         .tint(Color.tabTint)

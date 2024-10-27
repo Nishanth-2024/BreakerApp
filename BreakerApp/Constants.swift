@@ -7,7 +7,12 @@
 
 import SwiftUI
 
+struct FunctionalConstants {
+    static let BreakConfigKey: String = "breakConfig"
+}
+
 struct FontConstants {
+
     static let BlurViewTitleFont: Font = {
         return customOrSystemFont(name: "Helvetica Neue", size: 48, weight: .semibold, design: .rounded)
     }()
@@ -33,7 +38,7 @@ struct FontConstants {
     }()
     
     static let BlurViewTimeFont: Font = {
-        return customOrSystemFont(name: "Helvetica Neue", size: 48, weight: .semibold, design: .rounded)
+        return customOrSystemFont(name: "Helvetica Neue", size: 84, weight: .bold, design: .rounded)
     }()
     
     
@@ -61,6 +66,14 @@ struct FontConstants {
         return customOrSystemFont(name: "Helvetica Neue", size: 15, weight: .regular, design: .rounded)
     }()
     
+    static let ErrorTitle: Font = {
+        return customOrSystemFont(name: "Helvetica Neue", size: 21, weight: .semibold, design: .rounded)
+    }()
+    
+    static let ErrorMessage: Font = {
+        return customOrSystemFont(name: "Helvetica Neue", size: 18, weight: .regular, design: .rounded)
+    }()
+    
     private static func customOrSystemFont(name: String, size: CGFloat, weight: Font.Weight, design: Font.Design) -> Font {
         if NSFont(name: name, size: size) != nil {
             return Font.custom(name, size: size).weight(weight).monospacedDigit()
@@ -69,4 +82,3 @@ struct FontConstants {
         }
     }
 }
-
