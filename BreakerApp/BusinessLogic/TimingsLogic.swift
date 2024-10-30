@@ -15,6 +15,12 @@ class AppState {
     var isRunning: Bool = false
 }
 
+enum TimingsError: Error {
+    case invalidFrequency
+    case invalidDuration
+    case encodingFailed(Error)
+}
+
 struct TimingsLogic {
     
     public static func initialize() {
@@ -33,9 +39,21 @@ struct TimingsLogic {
 
     }
     
-    public static func updateTimings(frequency: Double, duration: Double) {
+    public static func updateTimings(frequency: Double, duration: Double) throws -> Void {
+        
+        guard frequency > 0 else { throw TimingsError.invalidFrequency }
+        guard duration > 0 else { throw TimingsError.invalidDuration }
+        
         self.frequency = frequency
         self.duration = duration
+        
+        do {
+            let encoded = try JSONEncoder().encode(BreakConfig(Frequency: frequency, Duration: duration))
+            UserDefaults.standard.set(encoded, forKey: FunctionalConstants.BreakConfigKey)
+        } catch {
+            throw TimingsError.encodingFailed(error)
+        }
+        
     }
     
     private(set) static var frequency: Double = 4

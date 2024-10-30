@@ -15,12 +15,13 @@ struct TimingsView: View {
     @State private var breakDuration: Double = TimingsLogic.duration
     
     @State private var showAlert: Bool = false
+    @State private var errorMessage: String = ""
     
     var body: some View {
         ZStack {
             VStack {
-                CustomTimePicker(title: "Break Frequency", value: $breakFrequency)
-                CustomTimePicker(title: "Break Duration", value: $breakDuration)
+                CustomTimePicker(title: "Break Frequency", systemName: "play.circle", value: $breakFrequency)
+                CustomTimePicker(title: "Break Duration", systemName: "cricket.ball", value: $breakDuration)
                 Button {
                     saveAction()
                 } label: {
@@ -39,20 +40,23 @@ struct TimingsView: View {
             }
             .padding()
             if showAlert {
-                Color.black.opacity(0.375)
-                    .blur(radius: 8)
-                    .edgesIgnoringSafeArea(.all)
+                Color.alertBg
+                    .blur(radius: 10)
+                    // .padding()
+                    // .edgesIgnoringSafeArea(.all)
                 VStack {
                     Text("Error")
                         .font(FontConstants.ErrorTitle)
                     Divider()
                         .frame(width: 256)
-                    Text("Failed to save the configuration. Please try again.")
+                    Text(errorMessage)
                         .font(FontConstants.ErrorMessage)
+                        .multilineTextAlignment(.leading)
                         .padding()
                     Button {
                         DispatchQueue.main.async {
                             showAlert = false
+                            errorMessage = ""
                         }
                     } label: {
                         Label {
@@ -79,13 +83,25 @@ struct TimingsView: View {
     
     private func saveAction() {
         do {
-            let encoded = try JSONEncoder().encode(BreakConfig(Frequency: breakFrequency, Duration: breakDuration))
-            UserDefaults.standard.set(encoded, forKey: FunctionalConstants.BreakConfigKey)
-            TimingsLogic.updateTimings(frequency: breakFrequency, duration: breakDuration)
+            try TimingsLogic.updateTimings(frequency: breakFrequency, duration: breakDuration)
             presentationMode.wrappedValue.dismiss()
+        } catch TimingsError.invalidFrequency {
+            errorMessage = "Invalid frequency value provided."
+            DispatchQueue.main.async {
+                showAlert = true
+            }
+        } catch TimingsError.invalidDuration {
+            errorMessage = "Invalid duration value provided."
+            DispatchQueue.main.async {
+                showAlert = true
+            }
+        } catch TimingsError.encodingFailed(let error) {
+            errorMessage = "Failed to encode BreakConfig: \(error.localizedDescription)"
+            DispatchQueue.main.async {
+                showAlert = true
+            }
         } catch {
-            print("Failed to encode BreakConfig: \(error.localizedDescription)")
-            // Handle the error appropriately, e.g., show an alert to the user
+            errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
             DispatchQueue.main.async {
                 showAlert = true
             }

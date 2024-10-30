@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CustomTimePicker: View {
     var title: String
+    var systemName: String
     @Binding var value: Double
     
     @State private var hours: Int = 0
@@ -17,10 +18,19 @@ struct CustomTimePicker: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(title)
-                .font(FontConstants.TimePickerTitleFont)
-                .padding(.bottom, 8)
-                .padding(.leading, 4)
+            HStack {
+                if !systemName.isEmpty {
+                    Image(systemName: systemName)
+                        .resizable()
+                        .frame(width: FunctionalConstants.TimePickerImageSize, height: FunctionalConstants.TimePickerImageSize)
+                        .scaledToFit()
+                        .padding(.horizontal, 4)
+                }
+                Text(title)
+                    .font(FontConstants.TimePickerTitleFont)
+            }
+            .padding(.bottom, 8)
+            .padding(.leading, 4)
             HStack {
                 Picker(selection: $hours, label: Text(" Hours ")) {
                     ForEach(0..<24) { hour in
@@ -76,6 +86,7 @@ struct CustomTimePicker: View {
 
 struct CustomTimePicker2: View {
     var title: String
+    var systemName: String
     @Binding var value: Double
     
     @State private var hours: Int = 0
@@ -84,10 +95,20 @@ struct CustomTimePicker2: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(title)
-                .font(FontConstants.TimePickerTitleFont)
-                .padding(.leading)
-                .padding(.top, 6)
+            HStack {
+                if !systemName.isEmpty {
+                    Image(systemName: systemName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: FunctionalConstants.TimePickerImageSize)
+                        .padding(.horizontal, 4)
+                }
+                Text(title)
+                    .font(FontConstants.TimePickerTitleFont)
+            }
+            .padding(.top, 8)
+            .padding(.bottom, 4)
+            .padding(.horizontal, 16)
             Divider()
             HStack {
                 Picker(selection: $hours, label: Text("Hours").font(FontConstants.TimePickerLabelFont)) {
@@ -151,17 +172,17 @@ struct CustomTimePicker2: View {
         .padding()
     VStack {
         Spacer()
-        CustomTimePicker(title: "Select Time", value: .constant(0))
-        CustomTimePicker(title: "Select Time", value: .constant(0))
+        CustomTimePicker(title: "Select Time", systemName: "gear", value: .constant(0))
+        CustomTimePicker(title: "Select Time", systemName: "", value: .constant(0))
         customDivider
-        CustomTimePicker2(title: "Select Time", value: .constant(0))
-        CustomTimePicker2(title: "Select Time", value: .constant(0))
+        CustomTimePicker2(title: "Select Time", systemName: "", value: .constant(0))
+        CustomTimePicker2(title: "Select Time", systemName: "", value: .constant(0))
         customDivider
-        CustomTimePicker(title: "Select Time", value: .constant(0))
-        CustomTimePicker2(title: "Select Time", value: .constant(0))
+        CustomTimePicker(title: "Select Time", systemName: "", value: .constant(0))
+        CustomTimePicker2(title: "Select Time", systemName: "", value: .constant(0))
         customDivider
-        CustomTimePicker2(title: "Select Time", value: .constant(0))
-        CustomTimePicker(title: "Select Time", value: .constant(0))
+        CustomTimePicker2(title: "Select Time", systemName: "", value: .constant(0))
+        CustomTimePicker(title: "Select Time", systemName: "", value: .constant(0))
         Spacer()
     }
     .frame(width: 480, height: 1020)

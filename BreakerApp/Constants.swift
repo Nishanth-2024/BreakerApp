@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FunctionalConstants {
     static let BreakConfigKey: String = "breakConfig"
+    static let TimePickerImageSize: Double = 18
 }
 
 struct FontConstants {
@@ -67,11 +68,11 @@ struct FontConstants {
     }()
     
     static let ErrorTitle: Font = {
-        return customOrSystemFont(name: "Helvetica Neue", size: 21, weight: .semibold, design: .rounded)
+        return customOrSystemFont(name: "Helvetica Neue", size: 18, weight: .semibold, design: .rounded)
     }()
     
     static let ErrorMessage: Font = {
-        return customOrSystemFont(name: "Helvetica Neue", size: 18, weight: .regular, design: .rounded)
+        return customOrSystemFont(name: "Helvetica Neue", size: 15, weight: .regular, design: .rounded)
     }()
     
     private static func customOrSystemFont(name: String, size: CGFloat, weight: Font.Weight, design: Font.Design) -> Font {
